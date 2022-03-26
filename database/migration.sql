@@ -1,6 +1,6 @@
 CREATE TABLE `users`
 (
-    id   bigint auto_increment,
+    id bigint AUTO_INCREMENT,
     name varchar(255) NOT NULL,
     PRIMARY KEY (`id`)
 );
