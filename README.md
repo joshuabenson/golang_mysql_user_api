@@ -1,5 +1,5 @@
 # Go MySQL User CRUD API
-Initially adapted from https://github.com/icodestuff-io/golang-docker-tutorial for Dockerfile
+Initially adapted from https://github.com/icodestuff-io/golang-docker-tutorial for Docker components
 
 ## Endpoints
 ### /users
