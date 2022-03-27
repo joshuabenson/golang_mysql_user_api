@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"encoding/json"
+	"errors"
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
 	"log"
@@ -46,6 +47,7 @@ func getUsers() []*User {
 }
 
 func insertUser(w http.ResponseWriter, r *http.Request) (int64, error) {
+
 	// Open up our database connection.
 	db, err := sql.Open("mysql", "tester:secret@tcp(db:3306)/josh_db")
 
@@ -60,7 +62,10 @@ func insertUser(w http.ResponseWriter, r *http.Request) (int64, error) {
 	if err != nil {
 		http.Error(w, jsonErr.Error(), http.StatusBadRequest)
 	}
-
+	if requestBody.Name == "" {
+		http.Error(w, "request body should contain `name` property", http.StatusBadRequest)
+		return -1, errors.New("error")
+	}
 	// Insert the name passed in the body of the request
 	results, queryErr := db.Exec("INSERT INTO users (`name`) VALUES (?);", requestBody.Name)
 	if queryErr != nil {
@@ -109,9 +114,11 @@ func userPage(w http.ResponseWriter, r *http.Request) {
 }
 
 func addUser(w http.ResponseWriter, r *http.Request) {
-	users, _ := insertUser(w, r)
+	users, error := insertUser(w, r)
 	fmt.Println("Endpoint Hit: /addUser")
-	json.NewEncoder(w).Encode(users)
+	if error == nil {
+		json.NewEncoder(w).Encode(users)
+	}
 }
 
 func main() {
